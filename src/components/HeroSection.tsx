@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, Play, CheckCircle } from 'lucide-react';
 import AnimatedCounter from './AnimatedCounter';
 
@@ -7,26 +7,15 @@ const HeroSection = () => {
   const phrases = ['AI Automation', 'Web Design', 'Cloud Solutions', 'Digital Transformation'];
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showVideo, setShowVideo] = useState(false); // New state for controlling video modal
 
-  useEffect(() => {
-    const currentPhrase = phrases[currentPhraseIndex];
-    const timeout = setTimeout(() => {
-      if (!isDeleting && typedText === currentPhrase) {
-        setTimeout(() => setIsDeleting(true), 2000);
-      } else if (isDeleting && typedText === '') {
-        setIsDeleting(false);
-        setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
-      } else {
-        setTypedText(prev => 
-          isDeleting 
-            ? prev.slice(0, -1)
-            : currentPhrase.slice(0, prev.length + 1)
-        );
-      }
-    }, isDeleting ? 50 : 100);
+  const handleWatchDemoClick = () => {
+    setShowVideo(true);
+  };
 
-    return () => clearTimeout(timeout);
-  }, [typedText, isDeleting, currentPhraseIndex, phrases]);
+  const closeVideoModal = () => {
+    setShowVideo(false);
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-maroon-gradient">
@@ -69,7 +58,10 @@ const HeroSection = () => {
               Start Your Transformation
               <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
             </button>
-            <button className="group bg-cream-100/10 backdrop-blur-sm border border-cream-200/20 text-cream-100 px-8 py-4 rounded-lg font-semibold hover:bg-cream-100/20 transition-all duration-300 flex items-center">
+            <button 
+              className="group bg-cream-100/10 backdrop-blur-sm border border-cream-200/20 text-cream-100 px-8 py-4 rounded-lg font-semibold hover:bg-cream-100/20 transition-all duration-300 flex items-center"
+              onClick={handleWatchDemoClick} // OnClick handler for the Watch Demo button
+            >
               <Play className="mr-2" size={20} />
               Watch Demo
             </button>
@@ -111,6 +103,29 @@ const HeroSection = () => {
           <div className="w-1 h-3 bg-cream-200/60 rounded-full animate-bounce mt-2"></div>
         </div>
       </div>
+
+      {/* Video Modal */}
+      {showVideo && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+          <div className="relative w-full h-full max-w-4xl max-h-[80vh] bg-white rounded-lg overflow-hidden">
+            <button 
+              className="absolute top-2 right-2 text-white text-3xl z-10"
+              onClick={closeVideoModal}
+            >
+              &times;
+            </button>
+            <iframe
+              width="100%"
+              height="100%"
+              src="https://drive.google.com/file/d/1x7cljHynhONwH5EkXVbCDPicTvbyitcO/preview"  // Autoplay enabled
+              title="Demo Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
